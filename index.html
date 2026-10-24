@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>八字排盘 · 命理测算</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="seal" aria-hidden="true">命</div>
+  <div class="header-text">
+    <h1>八字排盘</h1>
+    <p class="subtitle">四柱 · 五行 · 大运流年 · 命理解读</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ============ 输入区 ============ -->
+  <section class="card" id="input-card">
+    <h2 class="card-title">录入生辰</h2>
+    <form id="bazi-form" novalidate>
+
+      <div class="form-row">
+        <label class="field-label" for="f-name">姓名<span class="optional">（可不填）</span></label>
+        <input type="text" id="f-name" placeholder="命主" maxlength="20">
+      </div>
+
+      <div class="form-row">
+        <span class="field-label">性别<i class="required">*</i></span>
+        <div class="seg" role="radiogroup" aria-label="性别">
+          <input type="radio" name="gender" id="g-male" value="1" checked>
+          <label for="g-male">乾造 · 男</label>
+          <input type="radio" name="gender" id="g-female" value="0">
+          <label for="g-female">坤造 · 女</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <span class="field-label">历法</span>
+        <div class="seg" role="radiogroup" aria-label="历法">
+          <input type="radio" name="calendar" id="cal-solar" value="solar" checked>
+          <label for="cal-solar">公历</label>
+          <input type="radio" name="calendar" id="cal-lunar" value="lunar">
+          <label for="cal-lunar">农历</label>
+        </div>
+      </div>
+
+      <!-- 公历输入 -->
+      <div class="form-row" id="solar-input">
+        <label class="field-label" for="f-date">出生日期<i class="required">*</i></label>
+        <input type="date" id="f-date" min="1901-01-01" max="2099-12-31" required>
+      </div>
+
+      <!-- 农历输入 -->
+      <div class="form-row hidden" id="lunar-input">
+        <label class="field-label" for="f-lunar-year">农历生辰<i class="required">*</i></label>
+        <div class="lunar-selects">
+          <select id="f-lunar-year" aria-label="农历年"></select>
+          <select id="f-lunar-month" aria-label="农历月"></select>
+          <select id="f-lunar-day" aria-label="农历日"></select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field-label" for="f-time">出生时间<i class="required">*</i></label>
+        <div class="time-wrap">
+          <input type="time" id="f-time" value="12:00" required>
+          <span class="hint" id="shichen-hint">午时 · 11:00–13:00</span>
+        </div>
+        <p class="field-note">时辰未知者可选正午 12:00（仅作参考，时柱或有偏差）</p>
+      </div>
+
+      <div class="form-row">
+        <label class="field-label" for="f-true-solar">真太阳时校正</label>
+        <div class="true-solar-wrap">
+          <label class="switch">
+            <input type="checkbox" id="f-true-solar">
+            <span class="slider"></span>
+          </label>
+          <span class="field-note inline">按出生地经度校正地方时（含均时差）</span>
+        </div>
+      </div>
+
+      <div class="form-row hidden" id="longitude-row">
+        <label class="field-label" for="f-longitude">出生地经度<i class="required">*</i></label>
+        <div class="longitude-wrap">
+          <input type="number" id="f-longitude" value="120" min="73" max="136" step="0.01">
+          <span class="hint">°E（中国范围 73–136，如北京 116.41）</span>
+        </div>
+      </div>
+
+      <p class="form-error hidden" id="form-error"></p>
+
+      <button type="submit" class="btn-primary">开始排盘</button>
+    </form>
+  </section>
+
+  <!-- ============ 结果区 ============ -->
+  <section id="result" class="hidden">
+
+    <!-- 基本信息与四柱排盘 -->
+    <div class="card" id="chart-card">
+      <h2 class="card-title" id="chart-title">四柱八字</h2>
+      <div id="basic-info" class="basic-info"></div>
+      <div class="chart-scroll">
+        <table class="chart-table" id="chart-table"></table>
+      </div>
+      <div class="extra-info" id="extra-info"></div>
+    </div>
+
+    <!-- 五行分析 -->
+    <div class="card" id="wuxing-card">
+      <h2 class="card-title">五行分析</h2>
+      <div id="wuxing-bars"></div>
+      <div id="wuxing-verdict"></div>
+    </div>
+
+    <!-- 大运流年 -->
+    <div class="card" id="dayun-card">
+      <h2 class="card-title">大运流年</h2>
+      <div id="qiyun-info" class="qiyun-info"></div>
+      <div id="dayun-list" class="dayun-list"></div>
+      <p class="field-note">点击任一步大运可展开其流年</p>
+    </div>
+
+    <!-- 命理解读 -->
+    <div class="card" id="reading-card">
+      <h2 class="card-title">命理解读</h2>
+      <div id="reading-body"></div>
+      <p class="disclaimer-note">以上解读由简化命理规则自动生成，仅供参考娱乐，请勿作为人生重大决策依据。</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>排盘引擎：<a href="https://github.com/6tail/lunar-javascript" target="_blank" rel="noopener">lunar-javascript</a>（MIT 协议） · 解读规则为本站简化模型</p>
+  <p>本页面所有计算均在浏览器本地完成，不收集任何数据</p>
+</footer>
+
+<script src="lib/lunar.js"></script>
+<script src="js/analysis.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

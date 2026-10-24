@@ -1,0 +1,8 @@
+# macOS
+.DS_Store
+
+# ZCode 会话目录
+.zcode/
+
+# 本地服务日志
+*.log
