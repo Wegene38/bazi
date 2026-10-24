@@ -2,6 +2,18 @@
 
 基于 GitHub 开源排盘引擎 [lunar-javascript](https://github.com/6tail/lunar-javascript)（MIT 协议）开发的纯前端八字测算 Web 应用。无需安装、无需后端，浏览器打开即用，所有计算均在本地完成。
 
+## 在线使用
+
+**https://wegene38.github.io/bazi/**（GitHub Pages 托管，支持手机 / 电脑浏览器）
+
+## 手机上"装"成 App（添加到主屏幕）
+
+本站是 PWA，添加到主屏幕后以独立窗口打开、带印章图标、**离线也能用**（首次联网加载后所有排盘计算均在手机本地完成）：
+
+- **iPhone（Safari）**：打开上面的网址 → 底部「分享」按钮 →「添加到主屏幕」→「添加」
+- **Android（Chrome）**：打开网址 → 地址栏右侧「⋮」菜单（或安装提示横幅）→「添加到主屏幕 / 安装应用」
+- 微信内打开无法添加主屏幕，请点右上角「···」选择「在浏览器打开」后再操作
+
 ## 功能
 
 - **生辰录入**：公历 / 农历（含闰月）双历法输入，时辰实时提示，可选真太阳时校正（按出生地经度 + 均时差）
@@ -28,6 +40,9 @@ python3 -m http.server 8000
 ├── js/app.js           # 表单交互、排盘调用与渲染
 ├── js/analysis.js      # 解读规则库：十神推算、五行计分、强弱、喜用、文案
 ├── lib/lunar.js        # lunar-javascript 排盘引擎（MIT）
+├── icons/              # PWA 图标（印章风）
+├── manifest.webmanifest# PWA 应用清单
+├── sw.js               # Service Worker（离线缓存）
 └── test/verify.js      # 命例核对脚本（Node）
 ```
 

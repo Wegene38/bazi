@@ -1,0 +1,17 @@
+{
+  "name": "八字排盘 · 命理测算",
+  "short_name": "八字排盘",
+  "description": "四柱八字排盘、五行分析、大运流年与命理解读，纯本地计算",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f2ead8",
+  "theme_color": "#9e2f25",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
