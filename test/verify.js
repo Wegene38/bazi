@@ -56,6 +56,24 @@ const rd1 = BA.buildReading({ ec: ec1, gender: 1, score: s1, strength: st1, favo
 console.log("  格局:", rd1.gejuName, "| 主导十神:", rd1.topShiShen);
 console.log("  总评:", rd1.summary);
 
+/* 职业推荐 */
+const rec1 = BA.recommendCareers(ec1, s1, st1, fa1);
+eq("职业领域数量", rec1.list.length, 14);
+rec1.list.forEach((f) => {
+  const blob = f.careers + f.desc + f.name + f.reasons.map((r) => r.t).join(",");
+  if (/undefined|NaN/.test(blob)) { failed++; console.error("  ✗ 职业字段含 undefined/NaN: " + f.name); }
+  if (f.reasons.length === 0) { failed++; console.error("  ✗ 职业无任何依据: " + f.name); }
+});
+const top1 = rec1.list[0];
+const top1wx = BA.CAREER_FIELDS.find((f) => f.name === top1.name).wx;
+console.log("  TOP3:", rec1.list.slice(0, 3).map((f) => f.name + "(" + f.score + ")").join(" / "));
+if (top1wx.indexOf("金") < 0 && top1wx.indexOf("水") < 0) {
+  failed++; console.error("  ✗ 喜金水命例 TOP1「" + top1.name + "」五行(" + top1wx.join("/") + ")与喜用不符");
+} else {
+  console.log("  ✓ TOP1「" + top1.name + "」五行 " + top1wx.join("/") + " 与喜用神（金水）相符");
+}
+console.log("  神煞:", JSON.stringify(rec1.shensha));
+
 /* ---------- 命例二：2000-01-01 00:30（女，含晚子时） ---------- */
 console.log("命例二：2000-01-01 00:30 女（早子时，跨年柱）");
 const lunar2 = Lunar.fromDate(new Date(2000, 0, 1, 0, 30));
@@ -67,6 +85,8 @@ const fa2 = BA.favorable(ec2, s2, st2);
 const rd2 = BA.buildReading({ ec: ec2, gender: 0, score: s2, strength: st2, favor: fa2, currentDaYun: null, nextDaYun: null });
 console.log("  强弱:", st2.label, "| 格局:", rd2.gejuName);
 console.log("  婚姻:", rd2.marriage.slice(0, 60) + "…");
+const rec2 = BA.recommendCareers(ec2, s2, st2, fa2);
+console.log("  职业TOP2:", rec2.list.slice(0, 2).map((f) => f.name + "(" + f.score + ")").join(" / "));
 
 /* ---------- 命例三：2020 闰四月初五 → 公历 2020-05-27 ---------- */
 console.log("命例三：农历 2020 闰四月初五");

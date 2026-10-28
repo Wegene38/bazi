@@ -564,6 +564,86 @@ select {
 .liunian-chip.current { border-color: var(--cinnabar); color: var(--cinnabar-deep); }
 .liunian-chip .ss { color: var(--ink-light); font-size: 11px; margin-left: 4px; }
 
+/* ---------------- 职业推荐 ---------------- */
+
+.career-item {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: rgba(255, 252, 244, 0.6);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.career-item.top {
+  border-color: var(--cinnabar);
+  box-shadow: 0 0 0 1px var(--cinnabar), 0 2px 8px rgba(158, 47, 37, 0.1);
+}
+
+.career-head { display: flex; align-items: center; gap: 12px; }
+
+.career-rank {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cinnabar-deep);
+  border: 1.5px solid var(--cinnabar);
+  border-radius: 50%;
+}
+.career-item.top .career-rank { color: #f7ecd9; background: var(--cinnabar); }
+
+.career-name { font-size: 17px; font-weight: 700; letter-spacing: 2px; white-space: nowrap; }
+
+.career-score-track {
+  flex: 1;
+  height: 10px;
+  background: var(--paper-deep);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.career-score-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--cinnabar));
+  border-radius: 5px 0 0 5px;
+  transition: width 0.5s ease;
+}
+
+.career-jobs { font-size: 13.5px; margin-top: 8px; color: var(--ink); text-align: justify; }
+.career-jobs b { color: var(--cinnabar-deep); letter-spacing: 2px; margin-right: 4px; }
+
+.career-reasons { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 6px; }
+.reason-chip {
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--cinnabar-deep);
+  border: 1px solid rgba(158, 47, 37, 0.45);
+  background: rgba(158, 47, 37, 0.06);
+  border-radius: 3px;
+  padding: 1px 8px;
+}
+.reason-chip.neg {
+  color: var(--ink-light);
+  border-color: var(--line);
+  background: var(--paper-deep);
+}
+
+.career-avoid {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--ink-light);
+  background: rgba(233, 223, 198, 0.4);
+  border: 1px dashed var(--line);
+  border-radius: 4px;
+  padding: 10px 14px;
+  text-align: justify;
+}
+
+#career-card .model-note { margin-top: 14px; }
+
 /* ---------------- 命理解读 ---------------- */
 
 .reading-section { margin-bottom: 22px; }

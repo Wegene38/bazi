@@ -218,6 +218,7 @@
     renderChart(data.ec);
     renderWuxing(data);
     renderDaYun(data);
+    renderCareer(data);
     renderReading(data.reading);
     $("#result").classList.remove("hidden");
     $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -404,6 +405,46 @@
       var cur = document.querySelector('.dayun-item[data-idx="' + curIdx + '"]');
       if (cur) cur.classList.add("open");
     }
+  }
+
+  function renderCareer(data) {
+    var rec = BA.recommendCareers(data.ec, data.score, data.st, data.fa);
+    var list = rec.list.slice(0, 5);
+    var max = list[0] ? Math.max(list[0].score, 1) : 1;
+
+    var html = "";
+    list.forEach(function (f, i) {
+      var pct = Math.max(Math.round(f.score / max * 100), 5);
+      html += '<div class="career-item' + (i === 0 ? " top" : "") + '">';
+      html += '<div class="career-head">';
+      html += '<span class="career-rank">' + (i + 1) + "</span>";
+      html += '<span class="career-name">' + esc(f.name) + "</span>";
+      html += '<div class="career-score-track"><div class="career-score-fill" style="width:' + pct + '%"></div></div>';
+      html += "</div>";
+      html += '<p class="career-jobs"><b>适任</b> ' + esc(f.careers) + " — " + esc(f.desc) + "</p>";
+      html += '<div class="career-reasons">' +
+        f.reasons.map(function (r) {
+          return '<span class="reason-chip' + (r.neg ? " neg" : "") + '">' + esc(r.t) + "</span>";
+        }).join("") + "</div>";
+      html += "</div>";
+    });
+
+    // 相对费力方向：取分数最低的领域，温和提示
+    var worst = rec.list[rec.list.length - 1];
+    if (worst && worst.score < 50) {
+      html += '<p class="career-avoid">相对费力的方向：' + esc(worst.name) + "（" +
+        worst.reasons.filter(function (r) { return r.neg; }).map(function (r) { return esc(r.t); }).join("；") +
+        "）。命理仅为倾向参考，兴趣与努力始终优先。</p>";
+    }
+
+    // 命带神煞小结
+    var ss = rec.shensha, ssNote = [];
+    if (ss.wenchang) ssNote.push("文昌主聪颖好学，利考试功名");
+    if (ss.yima) ssNote.push("驿马主奔波变动，宜流动性事业");
+    if (ss.huagai) ssNote.push("华盖主艺术孤高，宜专精之学");
+    if (ssNote.length) html += '<p class="field-note">命带神煞：' + esc(ssNote.join("；")) + "。</p>";
+
+    $("#career-list").innerHTML = html;
   }
 
   function renderReading(r) {

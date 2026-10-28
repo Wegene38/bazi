@@ -289,6 +289,50 @@
   // 咸池桃花：按年支/日支三合局查
   var TAOHUA = { "申": "酉", "子": "酉", "辰": "酉", "寅": "卯", "午": "卯", "戌": "卯", "巳": "午", "酉": "午", "丑": "午", "亥": "子", "卯": "子", "未": "子" };
 
+  // ---- 神煞查法（传统口诀，辅助职业参考）----
+  // 文昌贵人：以年干或日干查四柱地支。主聪明好学，利文教、学术、写作、策划。
+  var WENCHANG = { "甲": "巳", "乙": "午", "丙": "申", "戊": "申", "丁": "酉", "己": "酉", "庚": "亥", "辛": "子", "壬": "寅", "癸": "卯" };
+  // 驿马：以年支或日支三合局查。主奔波变动，利贸易、交通、旅游、驻外等流动性职业。
+  var YIMA = { "申": "寅", "子": "寅", "辰": "寅", "寅": "申", "午": "申", "戌": "申", "巳": "亥", "酉": "亥", "丑": "亥", "亥": "巳", "卯": "巳", "未": "巳" };
+  // 华盖：以年支或日支三合局查。主艺术孤高，利艺术创作、玄学、技术研究、自由职业。
+  var HUAGAI = { "寅": "戌", "午": "戌", "戌": "戌", "申": "辰", "子": "辰", "辰": "辰", "巳": "丑", "酉": "丑", "丑": "丑", "亥": "未", "卯": "未", "未": "未" };
+
+  /**
+   * 查命带神煞（文昌 / 驿马 / 华盖）。
+   * 文昌以年干、日干查四支；驿马华盖以年支、日支查四支。
+   */
+  function getShenShas(ec) {
+    var zhis = [ec.getYearZhi(), ec.getMonthZhi(), ec.getDayZhi(), ec.getTimeZhi()];
+    var gans = [ec.getYearGan(), ec.getDayGan()];
+    var origins = [ec.getYearZhi(), ec.getDayZhi()];
+    function any(list, target) { return list.some(function (k) { return target.indexOf(k) >= 0; }); }
+    return {
+      wenchang: any(gans.map(function (g) { return WENCHANG[g]; }), zhis),
+      yima: any(origins.map(function (z) { return YIMA[z]; }), zhis),
+      huagai: any(origins.map(function (z) { return HUAGAI[z]; }), zhis)
+    };
+  }
+
+  // ---- 职业领域库 ----
+  // 依据：五行行业分类（xbmlz 速查表）+ 十神职业对照（传统命理通行口径）+ 神煞辅助
+  // wx: 领域五行归属；ss: 亲和十神；shensha: 亲和神煞；careers: 具体职业示例
+  var CAREER_FIELDS = [
+    { name: "公务管理", wx: ["土", "金"], ss: ["正官"], careers: "公务员、事业单位、国企管理、行政管理", desc: "讲求规范与层级，凭资历与口碑稳步晋升" },
+    { name: "军警法务", wx: ["金"], ss: ["七杀"], careers: "军警、执法、安保、法务、竞技体育", desc: "高压高对抗环境，以魄力与果决取胜" },
+    { name: "金融财务", wx: ["金"], ss: ["正财", "偏财"], careers: "银行、证券投资、会计审计、税务筹划", desc: "与钱打交道，重精准与风险控制" },
+    { name: "贸易销售", wx: ["水"], ss: ["偏财", "劫财"], shensha: ["yima"], careers: "外贸进出口、销售、电商、商务拓展", desc: "人脉即财源，机动灵活、长袖善舞" },
+    { name: "技术研发", wx: ["金", "火"], ss: ["伤官", "偏印"], careers: "工程师、IT 开发、科研、数据分析", desc: "以专业深度立身，钻研越深越吃香" },
+    { name: "教育文教", wx: ["木"], ss: ["正印", "食神"], shensha: ["wenchang"], careers: "教师、培训、学术研究、出版编辑", desc: "传道授业，名望与学识并重" },
+    { name: "文创传媒", wx: ["火", "木"], ss: ["伤官", "食神"], shensha: ["wenchang", "huagai"], careers: "写作、设计、影视、自媒体、广告策划", desc: "凭才华与创意说话，作品即名片" },
+    { name: "餐饮美业", wx: ["火"], ss: ["食神"], careers: "餐饮烹饪、烘焙茶饮、美容美发、康养", desc: "衣食住行之美，靠口碑与手艺积客" },
+    { name: "医疗健康", wx: ["木", "金"], ss: ["正印", "偏印"], careers: "医生、护理、中医、心理咨询、康复养生", desc: "仁心仁术，越老越值钱的专业行当" },
+    { name: "玄学咨询", wx: ["水", "木"], ss: ["偏印"], shensha: ["huagai"], careers: "易学命理、心理咨询、哲学宗教、策略咨询", desc: "直觉与智谋见长，宜深耕冷门专精" },
+    { name: "地产建筑", wx: ["土"], ss: ["正财", "正官"], careers: "房地产、建筑工程、装修、物业管理", desc: "厚重踏实，重资源整合与长期经营" },
+    { name: "交通物流", wx: ["水"], ss: ["偏财"], shensha: ["yima"], careers: "航运航空、快递运输、旅游酒店、外派", desc: "人动财动，越走越旺的流动行业" },
+    { name: "农林生态", wx: ["木", "土"], ss: ["正印", "正财"], careers: "农林牧渔、园艺花卉、环保、中医药种植", desc: "靠天时也靠耕耘，细水长流的实业" },
+    { name: "创业经营", wx: ["火"], ss: ["比肩", "劫财", "七杀"], careers: "自主创业、个体经营、合伙人、项目管理", desc: "自立门户，凭闯劲与号召力开疆拓土" }
+  ];
+
   /* ---------------- 综合解读 ---------------- */
 
   /**
@@ -304,12 +348,7 @@
     var dayWX = score.dayWX;
 
     // ---- 统计十神分布（四柱天干 + 地支藏干全量）----
-    var shiShenCount = {};
-    var addSS = function (name) { if (name && name !== "日主") shiShenCount[name] = (shiShenCount[name] || 0) + 1; };
-    [ec.getYearGan(), ec.getMonthGan(), ec.getTimeGan()].forEach(function (g) { addSS(shiShen(dayGan, g)); });
-    [ec.getYearZhi(), ec.getMonthZhi(), ec.getDayZhi(), ec.getTimeZhi()].forEach(function (z) {
-      hideGanOf(z).forEach(function (h) { addSS(shiShen(dayGan, h)); });
-    });
+    var shiShenCount = countShiShen(ec);
 
     // 格局：月支本气透干优先，否则径取月令本气十神
     var gejuSS = shiShen(dayGan, ZHI_MAIN_GAN[ec.getMonthZhi()]);
@@ -412,6 +451,63 @@
     };
   }
 
+  /* ---------------- 职业推荐 ---------------- */
+
+  /** 统计四柱十神分布（天干各一次 + 地支藏干全量），供解读与职业推荐共用 */
+  function countShiShen(ec) {
+    var dayGan = ec.getDayGan();
+    var count = {};
+    var add = function (name) { if (name) count[name] = (count[name] || 0) + 1; };
+    [ec.getYearGan(), ec.getMonthGan(), ec.getTimeGan()].forEach(function (g) { add(shiShen(dayGan, g)); });
+    [ec.getYearZhi(), ec.getMonthZhi(), ec.getDayZhi(), ec.getTimeZhi()].forEach(function (z) {
+      hideGanOf(z).forEach(function (h) { add(shiShen(dayGan, h)); });
+    });
+    return count;
+  }
+
+  var SHENSHA_NAMES = { wenchang: "文昌", yima: "驿马", huagai: "华盖" };
+  // 身强宜开创竞争类十神，身弱宜稳定辅助类十神
+  var SS_PIONEER = ["七杀", "伤官", "偏财", "劫财", "比肩"];
+  var SS_STEADY = ["正官", "正印", "偏印", "正财"];
+
+  /**
+   * 职业推荐：多信号加权评分
+   * 依据权重：喜用五行 +22 / 忌神五行 -10 / 亲和十神每见 +8（封顶 +16）/
+   *          格局当令 +10 / 神煞 +10 / 身强弱修正 +5
+   * @returns {list, shensha, note} list 为按分排序的全部领域（含 reasons）
+   */
+  function recommendCareers(ec, score, st, fa) {
+    var ssCount = countShiShen(ec);
+    var shensha = getShenShas(ec);
+    var gejuSS = shiShen(ec.getDayGan(), ZHI_MAIN_GAN[ec.getMonthZhi()]);
+    var gejuName = GEJU_NAMES[gejuSS];
+    var strong = st.level === "strong" || st.level === "slightly-strong";
+
+    var list = CAREER_FIELDS.map(function (f) {
+      var pts = 50, reasons = [];
+      f.wx.forEach(function (w) {
+        if (fa.favor.indexOf(w) >= 0) { pts += 22; reasons.push({ t: "喜用神利" + w, neg: false }); }
+        else if (fa.avoid.indexOf(w) >= 0) { pts -= 10; reasons.push({ t: "五行" + w + "为忌，相对费力", neg: true }); }
+      });
+      f.ss.forEach(function (s) {
+        var c = ssCount[s] || 0;
+        if (c > 0) { pts += Math.min(8 * c, 16); reasons.push({ t: s + (c > 1 ? "×" + c : "") + "入命", neg: false }); }
+      });
+      if (f.ss.indexOf(gejuSS) >= 0) { pts += 10; reasons.push({ t: gejuName + "当令", neg: false }); }
+      (f.shensha || []).forEach(function (key) {
+        if (shensha[key]) { pts += 10; reasons.push({ t: "命带" + SHENSHA_NAMES[key], neg: false }); }
+      });
+      if (strong && f.ss.some(function (s) { return SS_PIONEER.indexOf(s) >= 0; })) {
+        pts += 5; reasons.push({ t: "身强宜开创", neg: false });
+      } else if (!strong && f.ss.some(function (s) { return SS_STEADY.indexOf(s) >= 0; })) {
+        pts += 5; reasons.push({ t: "身弱宜稳健", neg: false });
+      }
+      return { name: f.name, careers: f.careers, desc: f.desc, score: pts, reasons: reasons };
+    }).sort(function (a, b) { return b.score - a.score; });
+
+    return { list: list, shensha: shensha };
+  }
+
   /* 工具 */
   function dominantWX(score) {
     var best = "木", n = -1;
@@ -430,6 +526,10 @@
     hideGanOf: hideGanOf,
     WX_SHENG: WX_SHENG, WX_KE: WX_KE, WX_LIST: WX_LIST,
     shiShen: shiShen,
+    countShiShen: countShiShen,
+    getShenShas: getShenShas,
+    recommendCareers: recommendCareers,
+    CAREER_FIELDS: CAREER_FIELDS,
     wuxingScore: wuxingScore,
     strength: strength,
     favorable: favorable,
