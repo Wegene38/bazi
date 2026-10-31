@@ -265,6 +265,7 @@
     renderWuxing(data);
     renderDaYun(data);
     renderCareer(data);
+    renderCelebs(data.ec);
     renderReading(data.reading);
     $("#result").classList.remove("hidden");
     $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -570,6 +571,41 @@
 
     $("#synastry-result").classList.remove("hidden");
     $("#synastry-result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /* ---------------- 同盘人物 ---------------- */
+
+  function renderCelebs(ec) {
+    var res = window.BaziCelebs.matchCelebs(ec);
+    var st = res.stats;
+    $("#celeb-summary").innerHTML =
+      "命例库收录 <b>" + st.total + "</b> 位人物 · 日柱与您相同 <b>" + st.sameDay +
+      "</b> 位 · 同日主 <b>" + st.sameGan + "</b> 位 · 同生肖 <b>" + st.sameZhi + "</b> 位";
+
+    if (!res.list.length) {
+      $("#celeb-list").innerHTML = '<p class="field-note" style="text-align:center">命例库中暂无与您干支相近的人物。</p>';
+      return;
+    }
+
+    var html = res.list.slice(0, 8).map(function (m, i) {
+      var pillars = ["年", "月", "日"].map(function (label, j) {
+        return '<span class="celeb-gz-item"><i>' + label + "</i>" + gzSpan(m.gz[j].charAt(0)) + gzSpan(m.gz[j].charAt(1)) + "</span>";
+      }).join("");
+      var badge = m.tags[0];
+      return '<div class="celeb-item' + (m.tags.indexOf("日柱相同") >= 0 ? " top" : "") + '">' +
+        '<div class="celeb-head">' +
+        '<span class="celeb-rank">' + (i + 1) + "</span>" +
+        '<span class="celeb-name">' + esc(m.name) + "</span>" +
+        '<span class="badge plain">' + esc(badge) + "</span>" +
+        '<span class="celeb-meta">' + esc(m.cat) + " · " + m.date + "</span>" +
+        '<span class="celeb-score">' + m.score + "</span>" +
+        "</div>" +
+        '<div class="celeb-gz">' + pillars + '<span class="celeb-tz"><i>时</i>时辰不详</span></div>' +
+        '<p class="celeb-view"><b>命理视角</b>' + esc(m.view) + "</p>" +
+        '<p class="celeb-bio">' + esc(m.bio) + "</p>" +
+        "</div>";
+    }).join("");
+    $("#celeb-list").innerHTML = html;
   }
 
   /* ---------------- 起名 ---------------- */

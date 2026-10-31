@@ -159,5 +159,29 @@ biz1.list.forEach((nm) => {
 });
 console.log("  公司名TOP3(" + biz1.wx + "属行业): " + biz1.list.slice(0, 3).map((nm) => nm.chars.map((c) => c.c).join("") + "(总格" + nm.shuli.n + nm.shuli.v + ")").join(" / "));
 
+/* ---------- 同盘人物 ---------- */
+console.log("同盘人物：库与匹配");
+const CB = require(path.join(__dirname, "..", "js", "celebs.js"));
+eq("命例库收录人数", CB.DB.length, CB.PEOPLE.length);
+// 每条记录四柱完整、无 undefined
+CB.DB.forEach((p) => {
+  const blob = p.name + p.bio + p.view + p.gz.join("");
+  if (/undefined|NaN/.test(blob)) { failed++; console.error("  ✗ 人物记录异常: " + p.name); }
+  if (!/^[甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥]$/.test(p.gz[2])) { failed++; console.error("  ✗ 日柱格式异常: " + p.name + " " + p.gz[2]); }
+});
+// 自匹配：毛泽东生日查库，TOP1 必为本人且日柱相同
+const me = Solar.fromYmdHms(1893, 12, 26, 12, 0, 0).getLunar().getEightChar();
+const mm = CB.matchCelebs(me);
+if (!mm.list.length || mm.list[0].name !== "毛泽东") { failed++; console.error("  ✗ 自匹配失败: " + (mm.list[0] || {}).name); }
+else if (mm.list[0].tags.indexOf("日柱相同") < 0) { failed++; console.error("  ✗ 自匹配未标日柱相同"); }
+else console.log("  ✓ 自匹配：毛泽东(" + mm.list[0].gz[2] + ") 日柱相同，得分 " + mm.list[0].score);
+// 命例一匹配示例
+const gm = CB.matchCelebs(ec1);
+console.log("  1986-05-29 癸酉日 TOP3: " + gm.list.slice(0, 3).map((m) => m.name + "(" + m.tags.join("/") + "," + m.score + ")").join("、"));
+gm.list.forEach((m) => {
+  if (/undefined|NaN/.test(m.name + m.view + m.bio + m.tags.join(","))) { failed++; console.error("  ✗ 匹配结果字段异常: " + m.name); }
+});
+console.log("  统计: 同日主 " + gm.stats.sameGan + " 位 / 同生肖 " + gm.stats.sameZhi + " 位 / 共 " + gm.stats.total + " 位");
+
 console.log(failed === 0 ? "\n全部核对通过 ✓" : "\n失败 " + failed + " 项 ✗");
 process.exit(failed === 0 ? 0 : 1);

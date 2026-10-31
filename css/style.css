@@ -788,6 +788,73 @@ select {
 #naming-basis { margin-bottom: 16px; }
 #naming-basis b { color: var(--cinnabar-deep); }
 
+/* ---------------- 同盘人物 ---------------- */
+
+.celeb-item {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: rgba(255, 252, 244, 0.6);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.celeb-item.top {
+  border-color: var(--cinnabar);
+  box-shadow: 0 0 0 1px var(--cinnabar), 0 2px 8px rgba(158, 47, 37, 0.1);
+}
+
+.celeb-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.celeb-rank {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinnabar-deep);
+  border: 1.5px solid var(--cinnabar);
+  border-radius: 50%;
+}
+.celeb-item.top .celeb-rank { color: #f7ecd9; background: var(--cinnabar); }
+.celeb-name { font-size: 18px; font-weight: 700; letter-spacing: 2px; }
+.celeb-meta { font-size: 13px; color: var(--ink-light); letter-spacing: 1px; flex: 1; }
+.celeb-score {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cinnabar-deep);
+  border: 1px solid rgba(158, 47, 37, 0.4);
+  border-radius: 3px;
+  padding: 0 8px;
+  background: rgba(158, 47, 37, 0.06);
+}
+
+.celeb-gz { display: flex; align-items: center; gap: 18px; margin-top: 10px; flex-wrap: wrap; }
+.celeb-gz-item { display: inline-flex; align-items: baseline; gap: 4px; }
+.celeb-gz-item i, .celeb-tz i {
+  font-style: normal;
+  font-size: 12px;
+  color: var(--ink-light);
+  letter-spacing: 1px;
+}
+.celeb-gz-item .gz { font-size: 22px; min-width: 26px; }
+.celeb-tz { font-size: 12px; color: var(--ink-light); }
+
+.celeb-view { margin-top: 9px; font-size: 13.5px; color: var(--ink); }
+.celeb-view b {
+  color: var(--cinnabar-deep);
+  letter-spacing: 2px;
+  margin-right: 8px;
+  border: 1px solid rgba(158, 47, 37, 0.4);
+  border-radius: 3px;
+  padding: 0 6px;
+  font-size: 12px;
+}
+.celeb-bio { margin-top: 5px; font-size: 13px; color: var(--ink-light); text-align: justify; }
+
+#celeb-summary { margin-bottom: 16px; }
+#celeb-summary b { color: var(--cinnabar-deep); }
+
 /* ---------------- 命理解读 ---------------- */
 
 .reading-section { margin-bottom: 22px; }
