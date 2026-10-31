@@ -146,77 +146,6 @@
     { c: "美", w: "水", s: 9, p: "měi", m: "尽善尽美，心地纯美" }
   ];
 
-  /* ---------------- 商用字库（公司字号）---------------- */
-  var BIZ_POOL = [
-    { c: "鑫", w: "金", s: 24, p: "xīn", m: "财富兴盛" },
-    { c: "金", w: "金", s: 8, p: "jīn", m: "尊贵坚实" },
-    { c: "瑞", w: "金", s: 14, p: "ruì", m: "祥瑞吉庆" },
-    { c: "祥", w: "金", s: 11, p: "xiáng", m: "吉祥如意" },
-    { c: "昌", w: "金", s: 8, p: "chāng", m: "昌盛兴旺" },
-    { c: "盛", w: "金", s: 12, p: "shèng", m: "兴旺繁盛" },
-    { c: "创", w: "金", s: 12, p: "chuàng", m: "开创进取" },
-    { c: "新", w: "金", s: 13, p: "xīn", m: "革新求变" },
-    { c: "信", w: "金", s: 9, p: "xìn", m: "诚信立业" },
-    { c: "隆", w: "火", s: 17, p: "lóng", m: "生意兴隆" },
-    { c: "泰", w: "火", s: 9, p: "tài", m: "泰运恒安" },
-    { c: "发", w: "水", s: 12, p: "fā", m: "发达兴旺" },
-    { c: "达", w: "火", s: 16, p: "dá", m: "通达顺遂" },
-    { c: "通", w: "火", s: 14, p: "tōng", m: "贯通四海" },
-    { c: "天", w: "火", s: 4, p: "tiān", m: "格局宏大" },
-    { c: "光", w: "火", s: 6, p: "guāng", m: "光明远大" },
-    { c: "辉", w: "火", s: 15, p: "huī", m: "辉煌璀璨" },
-    { c: "中", w: "火", s: 4, p: "zhōng", m: "持中守正" },
-    { c: "兴", w: "水", s: 16, p: "xīng", m: "兴旺发达" },
-    { c: "宝", w: "火", s: 20, p: "bǎo", m: "珍宝聚敛" },
-    { c: "腾", w: "火", s: 20, p: "téng", m: "腾飞跃升" },
-    { c: "卓", w: "火", s: 8, p: "zhuó", m: "卓尔不凡" },
-    { c: "拓", w: "火", s: 9, p: "tuò", m: "开拓疆域" },
-    { c: "丰", w: "火", s: 18, p: "fēng", m: "丰收丰裕" },
-    { c: "德", w: "火", s: 15, p: "dé", m: "以德立业" },
-    { c: "恒", w: "水", s: 10, p: "héng", m: "持之以恒" },
-    { c: "宏", w: "水", s: 7, p: "hóng", m: "宏图大展" },
-    { c: "海", w: "水", s: 11, p: "hǎi", m: "海纳百川" },
-    { c: "汇", w: "水", s: 13, p: "huì", m: "汇聚八方" },
-    { c: "源", w: "水", s: 14, p: "yuán", m: "源头活水" },
-    { c: "永", w: "水", s: 5, p: "yǒng", m: "基业长青" },
-    { c: "豪", w: "水", s: 14, p: "háo", m: "豪迈进取" },
-    { c: "飞", w: "水", s: 9, p: "fēi", m: "展翅高飞" },
-    { c: "富", w: "水", s: 12, p: "fù", m: "富足殷实" },
-    { c: "华", w: "水", s: 14, p: "huá", m: "华彩卓越" },
-    { c: "川", w: "金", s: 3, p: "chuān", m: "百川归海" },
-    { c: "山", w: "土", s: 3, p: "shān", m: "稳固如山" },
-    { c: "星", w: "金", s: 9, p: "xīng", m: "星光闪耀" },
-    { c: "辰", w: "土", s: 7, p: "chén", m: "星辰高远" },
-    { c: "旺", w: "土", s: 8, p: "wàng", m: "兴旺红火" },
-    { c: "贵", w: "木", s: 12, p: "guì", m: "尊贵不凡" },
-    { c: "玉", w: "木", s: 5, p: "yù", m: "玉质温润" },
-    { c: "杰", w: "木", s: 12, p: "jié", m: "人中豪杰" },
-    { c: "凯", w: "木", s: 12, p: "kǎi", m: "凯旋得胜" },
-    { c: "启", w: "木", s: 11, p: "qǐ", m: "启航开篇" },
-    { c: "元", w: "木", s: 4, p: "yuán", m: "一元复始" },
-    { c: "茂", w: "木", s: 11, p: "mào", m: "根深叶茂" },
-    { c: "佳", w: "木", s: 8, p: "jiā", m: "品质上佳" }
-  ];
-
-  /* ---------------- 行业 → 五行 ---------------- */
-  var INDUSTRIES = [
-    { name: "科技互联网 / 软件", wx: "火" },
-    { name: "广告传媒 / 影视文化", wx: "火" },
-    { name: "餐饮食品 / 烘焙", wx: "火" },
-    { name: "能源电力 / 化工", wx: "火" },
-    { name: "金融投资 / 银行证券", wx: "金" },
-    { name: "机械制造 / 五金精密", wx: "金" },
-    { name: "教育培训 / 文化出版", wx: "木" },
-    { name: "医疗健康 / 生物医药", wx: "木" },
-    { name: "农林牧渔 / 园艺环保", wx: "木" },
-    { name: "服装纺织 / 美容美业", wx: "木" },
-    { name: "房地产 / 建筑工程", wx: "土" },
-    { name: "物业管理 / 仓储物流", wx: "土" },
-    { name: "贸易进出口 / 电商", wx: "水" },
-    { name: "运输航运 / 旅游酒店", wx: "水" },
-    { name: "咨询策划 / 智力服务", wx: "水" }
-  ];
-
   /* ---------------- 常见姓氏康熙笔画 ---------------- */
   var SURNAME_STROKES = {
     "李": 7, "王": 4, "张": 11, "刘": 15, "陈": 16, "杨": 13, "黄": 12, "吴": 7, "赵": 14, "周": 8,
@@ -358,81 +287,12 @@
     };
   }
 
-  /* ---------------- 公司名生成 ---------------- */
-
-  function bizCharScore(ch, wx) {
-    if (ch.w === wx) return 35;
-    if (BA.WX_SHENG[ch.w] === wx) return 18; // 字五行生行业五行，如印生身
-    if (BA.WX_KE[ch.w] === wx) return -5;
-    if (BA.WX_SHENG[wx] === ch.w) return -3;
-    if (BA.WX_KE[wx] === ch.w) return 5; // 克制行业过旺亦可为用，小加
-    return 2;
-  }
-
-  /**
-   * 公司起名
-   * @param opts {wx(行业五行), count(字号字数 2/3)}
-   * @returns {list, wx}
-   */
-  function genCompanyNames(opts) {
-    var scored = BIZ_POOL.map(function (ch) { return { ch: ch, s: bizCharScore(ch, opts.wx) }; });
-    var results = [];
-    var tonePts = function (ps) {
-      var pts = 0;
-      for (var i = 1; i < ps.length; i++) { if (ps[i] !== ps[i - 1]) pts += 5; }
-      if (new Set(ps).size === 1) pts -= 4;
-      return pts;
-    };
-
-    function push(chars) {
-      var pts = chars.reduce(function (acc, x) { return acc + x.s; }, 0);
-      var zong = chars.reduce(function (acc, x) { return acc + x.ch.s; }, 0);
-      var sv = shuVerdict(zong);
-      pts += sv.v === "吉" ? 15 : sv.v === "半吉" ? 7 : -12;
-      pts += tonePts(chars.map(function (x) { return toneOf(x.ch.p); }));
-      results.push({ chars: chars.map(function (x) { return x.ch; }), score: pts, shuli: sv });
-    }
-
-    for (var a = 0; a < scored.length; a++) {
-      if (scored[a].s < 0) continue;
-      for (var b = 0; b < scored.length; b++) {
-        if (b === a || scored[b].s < 0) continue;
-        if (opts.count === 2) { push([scored[a], scored[b]]); continue; }
-        for (var c = 0; c < scored.length; c++) {
-          if (c === a || c === b || scored[c].s < 0) continue;
-          push([scored[a], scored[b], scored[c]]);
-        }
-      }
-    }
-    // 去重（顺序不同视为同一名字，保留先出现者）
-    var seen = {};
-    results = results.filter(function (r) {
-      var k = r.chars.map(function (x) { return x.c; }).join("");
-      if (seen[k]) return false;
-      seen[k] = 1;
-      return true;
-    });
-    results.sort(function (x, y) { return y.score - x.score; });
-
-    // 首字限流：避免同一首字霸榜
-    var fc = {};
-    results = results.filter(function (r) {
-      var k = r.chars[0].c;
-      fc[k] = (fc[k] || 0) + 1;
-      return fc[k] <= 2;
-    });
-    return { list: results.slice(0, 10), wx: opts.wx };
-  }
-
   var api = {
     PERSON_POOL: PERSON_POOL,
-    BIZ_POOL: BIZ_POOL,
-    INDUSTRIES: INDUSTRIES,
     SURNAME_STROKES: SURNAME_STROKES,
     wuge: wuge,
     shuVerdict: shuVerdict,
     genPersonNames: genPersonNames,
-    genCompanyNames: genCompanyNames,
     toneOf: toneOf
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api;

@@ -160,16 +160,6 @@
 
       <!-- ============ 起名面板 ============ -->
       <div id="panel-naming" class="hidden">
-        <div class="form-row">
-          <span class="field-label">起名类型</span>
-          <div class="seg">
-            <input type="radio" name="namingType" id="nt-person" value="person" checked>
-            <label for="nt-person">个人起名</label>
-            <input type="radio" name="namingType" id="nt-company" value="company">
-            <label for="nt-company">公司起名</label>
-          </div>
-        </div>
-
         <div id="naming-person">
           <div class="form-row">
             <label class="field-label" for="f-surname">姓氏<i class="required">*</i></label>
@@ -203,24 +193,6 @@
               <label for="nl-single">单字名</label>
             </div>
           </div>
-        </div>
-
-        <div id="naming-company" class="hidden">
-          <div class="form-row">
-            <label class="field-label" for="f-industry">所属行业<i class="required">*</i></label>
-            <select id="f-industry" aria-label="所属行业"></select>
-            <p class="field-note">行业对应五行将作为字号用字的补益方向</p>
-          </div>
-          <div class="form-row">
-            <span class="field-label">字号字数</span>
-            <div class="seg">
-              <input type="radio" name="bizLen" id="bl-2" value="2" checked>
-              <label for="bl-2">二字</label>
-              <input type="radio" name="bizLen" id="bl-3" value="3">
-              <label for="bl-3">三字</label>
-            </div>
-          </div>
-          <p class="field-note">以字号（品牌名）为主体测算：行业五行配字 + 总格数理（康熙笔画）+ 寓意音律</p>
         </div>
       </div><!-- /panel-naming -->
 

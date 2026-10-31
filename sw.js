@@ -1,6 +1,6 @@
 /* 简易离线缓存：安装时缓存全部静态资源，之后缓存优先、网络回退。
  * 更新资源时递增 CACHE_VERSION 即可让旧缓存失效。 */
-var CACHE_VERSION = "bazi-v2";
+var CACHE_VERSION = "bazi-v3";
 var ASSETS = [
   "./",
   "./index.html",

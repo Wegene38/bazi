@@ -117,20 +117,6 @@
         hideError();
       });
     });
-
-    // 起名类型切换
-    function toggleNaming() {
-      var person = $("#nt-person").checked;
-      $("#naming-person").classList.toggle("hidden", !person);
-      $("#naming-company").classList.toggle("hidden", person);
-    }
-    $("#nt-person").addEventListener("change", toggleNaming);
-    $("#nt-company").addEventListener("change", toggleNaming);
-
-    // 行业下拉（五行归属）
-    $("#f-industry").innerHTML = window.BaziNaming.INDUSTRIES.map(function (it) {
-      return '<option value="' + it.wx + '">' + esc(it.name) + "（" + it.wx + "）</option>";
-    }).join("");
   }
 
   /* ---------------- 农历三联下拉 ---------------- */
@@ -613,22 +599,15 @@
   function wugeCls(v) { return v === "吉" ? "vg-good" : v === "半吉" ? "vg-mid" : "vg-bad"; }
 
   function submitNaming() {
-    if ($("#nt-person").checked) {
-      var surnameText = $("#f-surname").value.trim();
-      if (!surnameText) return showError("请填写姓氏。");
-      var p = buildPerson("#f-date-n", "#f-time-n", "genderN", "命主", "");
-      if (!p) return showError("请填写宝宝的出生日期。");
-      var res = window.BaziNaming.genPersonNames({
-        surnameText: surnameText, gender: p.gender, fa: p.fa,
-        single: $("#nl-single").checked
-      });
-      renderNamingPerson(surnameText, p, res);
-    } else {
-      var wx = $("#f-industry").value;
-      var count = $("#bl-3").checked ? 3 : 2;
-      var res2 = window.BaziNaming.genCompanyNames({ wx: wx, count: count });
-      renderNamingCompany(wx, count, res2);
-    }
+    var surnameText = $("#f-surname").value.trim();
+    if (!surnameText) return showError("请填写姓氏。");
+    var p = buildPerson("#f-date-n", "#f-time-n", "genderN", "命主", "");
+    if (!p) return showError("请填写宝宝的出生日期。");
+    var res = window.BaziNaming.genPersonNames({
+      surnameText: surnameText, gender: p.gender, fa: p.fa,
+      single: $("#nl-single").checked
+    });
+    renderNamingPerson(surnameText, p, res);
   }
 
   function renderNamingPerson(surnameText, p, res) {
@@ -653,26 +632,6 @@
       return '<div class="name-item"><div class="name-head"><span class="name-rank">' + (i + 1) +
         '</span><span class="name-text">' + esc(name) + '</span><span class="name-pinyin">' + esc(pinyin) + "</span>" + wxTags + "</div>" +
         wugeHtml + '<p class="name-meaning">' + esc(meanings) + "</p></div>";
-    }).join("");
-    $("#naming-list").innerHTML = html;
-
-    $("#naming-result").classList.remove("hidden");
-    $("#naming-result").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  function renderNamingCompany(wx, count, res) {
-    $("#naming-card-title").textContent = "推荐字号 · " + count + "字 · " + wx + "属行业";
-    $("#naming-basis").innerHTML = "行业五行 <b>" + wx + "</b> · 字号用字优先取本气与相生之五行 · 总格按康熙笔画计 81 数理";
-
-    var html = res.list.map(function (n, i) {
-      var name = n.chars.map(function (c) { return c.c; }).join("");
-      var pinyin = n.chars.map(function (c) { return c.p; }).join(" ");
-      var wxTags = n.chars.map(function (c) { return '<span class="wx-tag wx-' + c.w + '">' + c.w + "</span>"; }).join("");
-      var meanings = n.chars.map(function (c) { return c.c + "：" + c.m; }).join("；");
-      return '<div class="name-item"><div class="name-head"><span class="name-rank">' + (i + 1) +
-        '</span><span class="name-text">' + esc(name) + '</span><span class="name-pinyin">' + esc(pinyin) + "</span>" + wxTags + "</div>" +
-        '<div class="name-wuge"><span>总格 <b class="' + wugeCls(n.shuli.v) + '">' + n.shuli.n + " " + n.shuli.v + "</b></span></div>" +
-        '<p class="name-meaning">' + esc(meanings) + "</p></div>";
     }).join("");
     $("#naming-list").innerHTML = html;
 

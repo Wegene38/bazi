@@ -150,14 +150,6 @@ const nmTop1wx = gen1.list[0].chars.map((c) => c.w);
 const inFavor = nmTop1wx.filter((w) => fa1.favor.indexOf(w) >= 0).length;
 if (inFavor < 1) { failed++; console.error("  ✗ TOP1 名字未补喜用五行: " + nmTop1wx.join("/")); }
 else console.log("  ✓ 人名TOP1「李" + gen1.list[0].chars.map((c) => c.c).join("") + "」五行 " + nmTop1wx.join("/") + "，喜用为 " + fa1.favor.join("/"));
-const biz1 = NM.genCompanyNames({ wx: "火", count: 3 });
-eq("公司名候选数量", biz1.list.length, 10);
-biz1.list.forEach((nm) => {
-  const blob = nm.chars.map((c) => c.c + c.p + c.m).join("");
-  if (/undefined|NaN/.test(blob)) { failed++; console.error("  ✗ 公司名字段异常"); }
-  if (!nm.shuli || !nm.shuli.v) { failed++; console.error("  ✗ 公司名缺数理"); }
-});
-console.log("  公司名TOP3(" + biz1.wx + "属行业): " + biz1.list.slice(0, 3).map((nm) => nm.chars.map((c) => c.c).join("") + "(总格" + nm.shuli.n + nm.shuli.v + ")").join(" / "));
 
 /* ---------- 同盘人物 ---------- */
 console.log("同盘人物：库与匹配");
