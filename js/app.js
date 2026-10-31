@@ -68,8 +68,10 @@
   function initForm() {
     // 默认日期：今天
     var now = new Date();
-    $("#f-date").value = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+    var today = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+    ["#f-date", "#f-date-a", "#f-date-b", "#f-date-n"].forEach(function (sel) { $(sel).value = today; });
 
+    initModeTabs();
     // 历法切换
     var radios = document.querySelectorAll('input[name="calendar"]');
     radios.forEach(function (r) {
@@ -90,6 +92,45 @@
 
     initLunarSelects();
     $("#bazi-form").addEventListener("submit", onSubmit);
+  }
+
+  /* ---------------- 模式切换 ---------------- */
+
+  var MODE = "single";
+  var MODE_BTN_TEXT = { single: "开始排盘", synastry: "开始合盘", naming: "开始起名" };
+  var RESULT_SELS = ["#result", "#synastry-result", "#naming-result"];
+
+  function initModeTabs() {
+    document.querySelectorAll(".mode-tab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        MODE = tab.dataset.mode;
+        document.querySelectorAll(".mode-tab").forEach(function (t) {
+          var on = t === tab;
+          t.classList.toggle("active", on);
+          t.setAttribute("aria-selected", on ? "true" : "false");
+        });
+        $("#panel-single").classList.toggle("hidden", MODE !== "single");
+        $("#panel-synastry").classList.toggle("hidden", MODE !== "synastry");
+        $("#panel-naming").classList.toggle("hidden", MODE !== "naming");
+        $("#submit-btn").textContent = MODE_BTN_TEXT[MODE];
+        RESULT_SELS.forEach(function (s) { $(s).classList.add("hidden"); });
+        hideError();
+      });
+    });
+
+    // 起名类型切换
+    function toggleNaming() {
+      var person = $("#nt-person").checked;
+      $("#naming-person").classList.toggle("hidden", !person);
+      $("#naming-company").classList.toggle("hidden", person);
+    }
+    $("#nt-person").addEventListener("change", toggleNaming);
+    $("#nt-company").addEventListener("change", toggleNaming);
+
+    // 行业下拉（五行归属）
+    $("#f-industry").innerHTML = window.BaziNaming.INDUSTRIES.map(function (it) {
+      return '<option value="' + it.wx + '">' + esc(it.name) + "（" + it.wx + "）</option>";
+    }).join("");
   }
 
   /* ---------------- 农历三联下拉 ---------------- */
@@ -133,7 +174,12 @@
   function onSubmit(e) {
     e.preventDefault();
     hideError();
+    if (MODE === "synastry") { submitSynastry(); return; }
+    if (MODE === "naming") { submitNaming(); return; }
+    submitSingle();
+  }
 
+  function submitSingle() {
     var gender = parseInt(document.querySelector('input[name="gender"]:checked').value, 10);
     var timeStr = $("#f-time").value || "12:00";
     var hh = parseInt(timeStr.split(":")[0], 10);
@@ -462,6 +508,140 @@
       html += '<div class="reading-section"><h3>' + esc(s[0]) + "</h3><p>" + esc(s[1]) + "</p></div>";
     });
     $("#reading-body").innerHTML = html;
+  }
+
+  /* ---------------- 合盘 ---------------- */
+
+  function buildPerson(selDate, selTime, genderName, fallbackName, nameVal) {
+    var dv = $(selDate).value;
+    var tv = $(selTime).value || "12:00";
+    if (!dv) return null;
+    var parts = dv.split("-");
+    var gender = parseInt(document.querySelector('input[name="' + genderName + '"]:checked').value, 10);
+    var birth = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10),
+      parseInt(tv.split(":")[0], 10), parseInt(tv.split(":")[1], 10));
+    var lunar = window.Lunar.fromDate(birth);
+    var ec = lunar.getEightChar();
+    var score = BA.wuxingScore(ec);
+    var st = BA.strength(ec, score);
+    var fa = BA.favorable(ec, score, st);
+    return { name: (nameVal || "").trim() || fallbackName, gender: gender, birth: birth, lunar: lunar, ec: ec, score: score, st: st, fa: fa };
+  }
+
+  function pillarGanZhi(ec, i) {
+    return [
+      [ec.getYearGan(), ec.getYearZhi()], [ec.getMonthGan(), ec.getMonthZhi()],
+      [ec.getDayGan(), ec.getDayZhi()], [ec.getTimeGan(), ec.getTimeZhi()]
+    ][i];
+  }
+
+  function submitSynastry() {
+    var A = buildPerson("#f-date-a", "#f-time-a", "genderA", "甲方", $("#f-name-a").value);
+    var B = buildPerson("#f-date-b", "#f-time-b", "genderB", "乙方", $("#f-name-b").value);
+    if (!A) return showError("请填写甲方的出生日期。");
+    if (!B) return showError("请填写乙方的出生日期。");
+    var syn = window.BaziSynastry.computeSynastry(A, B);
+    renderSynastry(A, B, syn);
+  }
+
+  function renderSynastry(A, B, syn) {
+    var html = '<div class="chart-scroll"><table class="chart-table"><tr><th></th><th>' + esc(A.name) + "</th><th>" + esc(B.name) + "</th></tr>";
+    ["年柱", "月柱", "日柱", "时柱"].forEach(function (pn, i) {
+      var gA = pillarGanZhi(A.ec, i), gB = pillarGanZhi(B.ec, i);
+      var tag = i === 2 ? '<br><span class="day-master-tag">夫妻宫</span>' : "";
+      html += '<tr><td class="label-td">' + pn + tag + "</td><td>" + gzSpan(gA[0]) + gzSpan(gA[1]) + "</td><td>" + gzSpan(gB[0]) + gzSpan(gB[1]) + "</td></tr>";
+    });
+    html += "</table></div>";
+    html += '<div class="extra-info">' +
+      "<span>" + esc(A.name) + " <b>" + (A.gender === 1 ? "男" : "女") + "</b> · 日主 <b>" + A.ec.getDayGan() + "</b>（" + A.score.dayWX + "）" + A.st.label + " · 喜用 <b>" + A.fa.favor.join("、") + "</b></span>" +
+      "<span>" + esc(B.name) + " <b>" + (B.gender === 1 ? "男" : "女") + "</b> · 日主 <b>" + B.ec.getDayGan() + "</b>（" + B.score.dayWX + "）" + B.st.label + " · 喜用 <b>" + B.fa.favor.join("、") + "</b></span>" +
+      "</div>";
+    $("#syn-compare-body").innerHTML = html;
+
+    var bandClass = syn.score >= 80 ? "excellent" : syn.score >= 65 ? "good" : syn.score >= 50 ? "fair" : "poor";
+    var body = '<div class="syn-score ' + bandClass + '"><div class="syn-score-num">' + syn.score + '</div><div class="syn-score-band">' + esc(syn.band) + "</div></div>";
+    body += '<div class="syn-items">' + syn.items.map(function (it) {
+      return '<div class="syn-item' + (it.pos ? "" : " neg") + '"><span class="syn-item-label">' + esc(it.label) +
+        (it.pts ? "<i>" + (it.pts > 0 ? "+" : "") + it.pts + "</i>" : "") +
+        '</span><span class="syn-item-detail">' + esc(it.detail) + "</span></div>";
+    }).join("") + "</div>";
+    body += '<div class="verdict-box"><p>' + esc(syn.summary) + "</p></div>";
+    $("#syn-score-body").innerHTML = body;
+
+    $("#synastry-result").classList.remove("hidden");
+    $("#synastry-result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /* ---------------- 起名 ---------------- */
+
+  function wugeCls(v) { return v === "吉" ? "vg-good" : v === "半吉" ? "vg-mid" : "vg-bad"; }
+
+  function submitNaming() {
+    if ($("#nt-person").checked) {
+      var surnameText = $("#f-surname").value.trim();
+      if (!surnameText) return showError("请填写姓氏。");
+      var p = buildPerson("#f-date-n", "#f-time-n", "genderN", "命主", "");
+      if (!p) return showError("请填写宝宝的出生日期。");
+      var res = window.BaziNaming.genPersonNames({
+        surnameText: surnameText, gender: p.gender, fa: p.fa,
+        single: $("#nl-single").checked
+      });
+      renderNamingPerson(surnameText, p, res);
+    } else {
+      var wx = $("#f-industry").value;
+      var count = $("#bl-3").checked ? 3 : 2;
+      var res2 = window.BaziNaming.genCompanyNames({ wx: wx, count: count });
+      renderNamingCompany(wx, count, res2);
+    }
+  }
+
+  function renderNamingPerson(surnameText, p, res) {
+    $("#naming-card-title").textContent = "推荐名字 · " + surnameText + "姓" + (p.gender === 1 ? "男宝" : "女宝");
+    $("#naming-basis").innerHTML = "日主 <b>" + p.ec.getDayGan() + "</b>（" + p.score.dayWX + "）· " + p.st.label +
+      " · 名字优先补益喜用五行 <b>" + res.favor.join("、") + "</b>" +
+      (res.surnameKnown ? "" : " · <span style=\"color:var(--cinnabar-deep)\">姓氏笔画未收录，未计五格数理</span>");
+
+    var html = res.list.map(function (n, i) {
+      var name = surnameText + n.chars.map(function (c) { return c.c; }).join("");
+      var pinyin = n.chars.map(function (c) { return c.p; }).join(" ");
+      var wxTags = n.chars.map(function (c) { return '<span class="wx-tag wx-' + c.w + '">' + c.w + "</span>"; }).join("");
+      var meanings = n.chars.map(function (c) { return c.c + "：" + c.m; }).join("；");
+      var wugeHtml = "";
+      if (n.wuge) {
+        wugeHtml = '<div class="name-wuge">' +
+          '<span>人格 <b class="' + wugeCls(n.wuge.ren.v) + '">' + n.wuge.ren.n + " " + n.wuge.ren.v + "</b></span>" +
+          '<span>地格 <b class="' + wugeCls(n.wuge.di.v) + '">' + n.wuge.di.n + " " + n.wuge.di.v + "</b></span>" +
+          '<span>总格 <b class="' + wugeCls(n.wuge.zong.v) + '">' + n.wuge.zong.n + " " + n.wuge.zong.v + "</b></span>" +
+          "</div>";
+      }
+      return '<div class="name-item"><div class="name-head"><span class="name-rank">' + (i + 1) +
+        '</span><span class="name-text">' + esc(name) + '</span><span class="name-pinyin">' + esc(pinyin) + "</span>" + wxTags + "</div>" +
+        wugeHtml + '<p class="name-meaning">' + esc(meanings) + "</p></div>";
+    }).join("");
+    $("#naming-list").innerHTML = html;
+
+    $("#naming-result").classList.remove("hidden");
+    $("#naming-result").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderNamingCompany(wx, count, res) {
+    $("#naming-card-title").textContent = "推荐字号 · " + count + "字 · " + wx + "属行业";
+    $("#naming-basis").innerHTML = "行业五行 <b>" + wx + "</b> · 字号用字优先取本气与相生之五行 · 总格按康熙笔画计 81 数理";
+
+    var html = res.list.map(function (n, i) {
+      var name = n.chars.map(function (c) { return c.c; }).join("");
+      var pinyin = n.chars.map(function (c) { return c.p; }).join(" ");
+      var wxTags = n.chars.map(function (c) { return '<span class="wx-tag wx-' + c.w + '">' + c.w + "</span>"; }).join("");
+      var meanings = n.chars.map(function (c) { return c.c + "：" + c.m; }).join("；");
+      return '<div class="name-item"><div class="name-head"><span class="name-rank">' + (i + 1) +
+        '</span><span class="name-text">' + esc(name) + '</span><span class="name-pinyin">' + esc(pinyin) + "</span>" + wxTags + "</div>" +
+        '<div class="name-wuge"><span>总格 <b class="' + wugeCls(n.shuli.v) + '">' + n.shuli.n + " " + n.shuli.v + "</b></span></div>" +
+        '<p class="name-meaning">' + esc(meanings) + "</p></div>";
+    }).join("");
+    $("#naming-list").innerHTML = html;
+
+    $("#naming-result").classList.remove("hidden");
+    $("#naming-result").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   /* ---------------- 启动 ---------------- */

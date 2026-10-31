@@ -26,7 +26,13 @@
   <!-- ============ 输入区 ============ -->
   <section class="card" id="input-card">
     <h2 class="card-title">录入生辰</h2>
+    <div class="mode-tabs" id="mode-tabs" role="tablist">
+      <button type="button" class="mode-tab active" data-mode="single" role="tab" aria-selected="true">单盘排盘</button>
+      <button type="button" class="mode-tab" data-mode="synastry" role="tab" aria-selected="false">双人合盘</button>
+      <button type="button" class="mode-tab" data-mode="naming" role="tab" aria-selected="false">起名取名</button>
+    </div>
     <form id="bazi-form" novalidate>
+      <div id="panel-single">
 
       <div class="form-row">
         <label class="field-label" for="f-name">姓名<span class="optional">（可不填）</span></label>
@@ -96,10 +102,131 @@
           <span class="hint">°E（中国范围 73–136，如北京 116.41）</span>
         </div>
       </div>
+      </div><!-- /panel-single -->
+
+      <!-- ============ 合盘面板 ============ -->
+      <div id="panel-synastry" class="hidden">
+        <div class="person-box">
+          <h3 class="person-title">甲方</h3>
+          <div class="form-row">
+            <label class="field-label" for="f-name-a">称呼<span class="optional">（可不填）</span></label>
+            <input type="text" id="f-name-a" placeholder="甲方" maxlength="20">
+          </div>
+          <div class="form-row">
+            <span class="field-label">性别<i class="required">*</i></span>
+            <div class="seg">
+              <input type="radio" name="genderA" id="g-a-m" value="1" checked>
+              <label for="g-a-m">男</label>
+              <input type="radio" name="genderA" id="g-a-f" value="0">
+              <label for="g-a-f">女</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="field-label" for="f-date-a">出生日期<i class="required">*</i></label>
+            <input type="date" id="f-date-a" min="1901-01-01" max="2099-12-31" required>
+          </div>
+          <div class="form-row">
+            <label class="field-label" for="f-time-a">出生时间<i class="required">*</i></label>
+            <input type="time" id="f-time-a" value="12:00" required>
+          </div>
+        </div>
+
+        <div class="person-box">
+          <h3 class="person-title">乙方</h3>
+          <div class="form-row">
+            <label class="field-label" for="f-name-b">称呼<span class="optional">（可不填）</span></label>
+            <input type="text" id="f-name-b" placeholder="乙方" maxlength="20">
+          </div>
+          <div class="form-row">
+            <span class="field-label">性别<i class="required">*</i></span>
+            <div class="seg">
+              <input type="radio" name="genderB" id="g-b-m" value="1" checked>
+              <label for="g-b-m">男</label>
+              <input type="radio" name="genderB" id="g-b-f" value="0">
+              <label for="g-b-f">女</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="field-label" for="f-date-b">出生日期<i class="required">*</i></label>
+            <input type="date" id="f-date-b" min="1901-01-01" max="2099-12-31" required>
+          </div>
+          <div class="form-row">
+            <label class="field-label" for="f-time-b">出生时间<i class="required">*</i></label>
+            <input type="time" id="f-time-b" value="12:00" required>
+          </div>
+        </div>
+        <p class="field-note">合盘按公历计算，不做真太阳时校正；评分以日柱夫妻宫与喜用神互补为主，生肖为辅。</p>
+      </div><!-- /panel-synastry -->
+
+      <!-- ============ 起名面板 ============ -->
+      <div id="panel-naming" class="hidden">
+        <div class="form-row">
+          <span class="field-label">起名类型</span>
+          <div class="seg">
+            <input type="radio" name="namingType" id="nt-person" value="person" checked>
+            <label for="nt-person">个人起名</label>
+            <input type="radio" name="namingType" id="nt-company" value="company">
+            <label for="nt-company">公司起名</label>
+          </div>
+        </div>
+
+        <div id="naming-person">
+          <div class="form-row">
+            <label class="field-label" for="f-surname">姓氏<i class="required">*</i></label>
+            <input type="text" id="f-surname" placeholder="如：李（复姓亦可）" maxlength="2" required>
+            <p class="field-note">姓氏笔画按康熙字典口径计算，未收录的姓氏将不计算五格数理</p>
+          </div>
+          <div class="form-row">
+            <span class="field-label">性别<i class="required">*</i></span>
+            <div class="seg">
+              <input type="radio" name="genderN" id="g-n-m" value="1" checked>
+              <label for="g-n-m">男</label>
+              <input type="radio" name="genderN" id="g-n-f" value="0">
+              <label for="g-n-f">女</label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="field-label" for="f-date-n">出生日期<i class="required">*</i></label>
+            <input type="date" id="f-date-n" min="1901-01-01" max="2099-12-31" required>
+            <p class="field-note">以出生时间推算八字喜用神，名字优先补益喜用五行</p>
+          </div>
+          <div class="form-row">
+            <label class="field-label" for="f-time-n">出生时间<i class="required">*</i></label>
+            <input type="time" id="f-time-n" value="12:00" required>
+          </div>
+          <div class="form-row">
+            <span class="field-label">名字样式</span>
+            <div class="seg">
+              <input type="radio" name="nameLen" id="nl-double" value="double" checked>
+              <label for="nl-double">双字名</label>
+              <input type="radio" name="nameLen" id="nl-single" value="single">
+              <label for="nl-single">单字名</label>
+            </div>
+          </div>
+        </div>
+
+        <div id="naming-company" class="hidden">
+          <div class="form-row">
+            <label class="field-label" for="f-industry">所属行业<i class="required">*</i></label>
+            <select id="f-industry" aria-label="所属行业"></select>
+            <p class="field-note">行业对应五行将作为字号用字的补益方向</p>
+          </div>
+          <div class="form-row">
+            <span class="field-label">字号字数</span>
+            <div class="seg">
+              <input type="radio" name="bizLen" id="bl-2" value="2" checked>
+              <label for="bl-2">二字</label>
+              <input type="radio" name="bizLen" id="bl-3" value="3">
+              <label for="bl-3">三字</label>
+            </div>
+          </div>
+          <p class="field-note">以字号（品牌名）为主体测算：行业五行配字 + 总格数理（康熙笔画）+ 寓意音律</p>
+        </div>
+      </div><!-- /panel-naming -->
 
       <p class="form-error hidden" id="form-error"></p>
 
-      <button type="submit" class="btn-primary">开始排盘</button>
+      <button type="submit" class="btn-primary" id="submit-btn">开始排盘</button>
     </form>
   </section>
 
@@ -147,6 +274,32 @@
 
   </section>
 
+  <!-- ============ 合盘结果区 ============ -->
+  <section id="synastry-result" class="hidden">
+
+    <div class="card" id="syn-compare-card">
+      <h2 class="card-title">双方命盘</h2>
+      <div id="syn-compare-body"></div>
+    </div>
+
+    <div class="card" id="syn-score-card">
+      <h2 class="card-title">合盘结果</h2>
+      <div id="syn-score-body"></div>
+      <p class="disclaimer-note">合盘评分为简化命理模型（日柱夫妻宫与喜用互补为主、生肖为辅），仅供参考娱乐。感情的经营远比命盘重要。</p>
+    </div>
+
+  </section>
+
+  <!-- ============ 起名结果区 ============ -->
+  <section id="naming-result" class="hidden">
+    <div class="card" id="naming-card">
+      <h2 class="card-title" id="naming-card-title">推荐名字</h2>
+      <div id="naming-basis" class="qiyun-info"></div>
+      <div id="naming-list"></div>
+      <p class="model-note">起名依据：八字喜用五行选字 + 五格剖象法（康熙笔画、81 数理）+ 音律寓意。五格数理为日式改良姓名学，口径存在争议，仅供娱乐参考；正式定名请结合家族传统、谐音歧义与个人喜好。</p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
@@ -156,6 +309,8 @@
 
 <script src="lib/lunar.js"></script>
 <script src="js/analysis.js"></script>
+<script src="js/synastry.js"></script>
+<script src="js/naming.js"></script>
 <script src="js/app.js"></script>
 <script>
   // 注册 Service Worker，实现离线可用与"添加到主屏幕"的类 App 体验

@@ -106,5 +106,58 @@ console.log("  均时差 ≈ " + eot.toFixed(2) + " 分钟（天文值约 -1.6 �
 const offset = (116.41 - 120) * 4 + eot;
 console.log("  总校正 ≈ " + offset.toFixed(1) + " 分钟");
 
+/* ---------- 合盘 ---------- */
+console.log("合盘：1986-05-29 13:37 男 × 1990-01-01 10:00 女");
+const Syn = require(path.join(__dirname, "..", "js", "synastry.js"));
+function mkPerson(ec, gender, name) {
+  const sc = BA.wuxingScore(ec);
+  const st = BA.strength(ec, sc);
+  return { name, gender, ec, score: sc, st, fa: BA.favorable(ec, sc, st) };
+}
+const ecB = Lunar.fromDate(new Date(1990, 0, 1, 10, 0)).getEightChar();
+const A1 = mkPerson(ec1, 1, "甲");
+const B1 = mkPerson(ecB, 0, "乙");
+const syn = Syn.computeSynastry(A1, B1);
+if (syn.score < 5 || syn.score > 98) { failed++; console.error("  ✗ 合盘分数越界: " + syn.score); }
+if (!syn.band || /undefined|NaN/.test(syn.summary)) { failed++; console.error("  ✗ 合盘文案异常"); }
+eq("合盘分项数量", syn.items.length > 0, true);
+console.log("  得分: " + syn.score + "（" + syn.band + "）分项 " + syn.items.length + " 条");
+syn.items.forEach((it) => console.log("    " + (it.pos ? "+" : "-") + " " + it.label + " " + it.pts + "｜" + it.detail));
+// 冲刑判定抽查
+eq("子午判定为冲", Syn.relationOf("子", "午").key, "chong");
+eq("寅亥判定为六合", Syn.relationOf("寅", "亥").key, "liuhe");
+eq("丑戌判定为刑", Syn.relationOf("丑", "戌").key, "xing");
+eq("巳申合优先于刑（合解刑）", Syn.relationOf("巳", "申").key, "liuhe");
+
+/* ---------- 起名 ---------- */
+console.log("起名：五格与生成");
+const NM = require(path.join(__dirname, "..", "js", "naming.js"));
+const wg = NM.wuge([{ c: "李", s: 7 }], [{ c: "梓", s: 11 }, { c: "涵", s: 12 }]);
+eq("五格天格(李+1)", wg.tian.n, 8);
+eq("五格人格(李+梓)", wg.ren.n, 18);
+eq("五格地格(梓+涵)", wg.di.n, 23);
+eq("五格外格(总-人+1)", wg.wai.n, 13);
+eq("五格总格", wg.zong.n, 30);
+eq("数理18吉", wg.ren.v, "吉");
+eq("数理30半吉", wg.zong.v, "半吉");
+const gen1 = NM.genPersonNames({ surnameText: "李", gender: 1, fa: fa1, single: false });
+eq("人名候选数量", gen1.list.length, 12);
+gen1.list.forEach((nm) => {
+  const blob = nm.chars.map((c) => c.c + c.p + c.m).join("") + JSON.stringify(nm.wuge || {});
+  if (/undefined|NaN/.test(blob)) { failed++; console.error("  ✗ 人名字段异常"); }
+});
+const nmTop1wx = gen1.list[0].chars.map((c) => c.w);
+const inFavor = nmTop1wx.filter((w) => fa1.favor.indexOf(w) >= 0).length;
+if (inFavor < 1) { failed++; console.error("  ✗ TOP1 名字未补喜用五行: " + nmTop1wx.join("/")); }
+else console.log("  ✓ 人名TOP1「李" + gen1.list[0].chars.map((c) => c.c).join("") + "」五行 " + nmTop1wx.join("/") + "，喜用为 " + fa1.favor.join("/"));
+const biz1 = NM.genCompanyNames({ wx: "火", count: 3 });
+eq("公司名候选数量", biz1.list.length, 10);
+biz1.list.forEach((nm) => {
+  const blob = nm.chars.map((c) => c.c + c.p + c.m).join("");
+  if (/undefined|NaN/.test(blob)) { failed++; console.error("  ✗ 公司名字段异常"); }
+  if (!nm.shuli || !nm.shuli.v) { failed++; console.error("  ✗ 公司名缺数理"); }
+});
+console.log("  公司名TOP3(" + biz1.wx + "属行业): " + biz1.list.slice(0, 3).map((nm) => nm.chars.map((c) => c.c).join("") + "(总格" + nm.shuli.n + nm.shuli.v + ")").join(" / "));
+
 console.log(failed === 0 ? "\n全部核对通过 ✓" : "\n失败 " + failed + " 项 ✗");
 process.exit(failed === 0 ? 0 : 1);

@@ -644,6 +644,150 @@ select {
 
 #career-card .model-note { margin-top: 14px; }
 
+/* ---------------- 模式切换 ---------------- */
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.mode-tab {
+  font-family: var(--font-serif);
+  font-size: 15px;
+  letter-spacing: 3px;
+  padding: 9px 22px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(255, 252, 244, 0.85);
+  color: var(--ink-light);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.mode-tab:hover { background: var(--paper-deep); }
+.mode-tab.active {
+  background: var(--cinnabar);
+  border-color: var(--cinnabar-deep);
+  color: #f7ecd9;
+}
+
+/* 合盘：双人面板 */
+.person-box {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: rgba(255, 252, 244, 0.5);
+  padding: 16px 16px 4px;
+  margin-bottom: 16px;
+}
+.person-title {
+  font-size: 15px;
+  letter-spacing: 4px;
+  color: var(--cinnabar-deep);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.person-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+/* 合盘：分数盘与分项 */
+.syn-score {
+  width: 132px;
+  height: 132px;
+  margin: 6px auto 18px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--gold);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 250, 235, 0.9), var(--paper-deep));
+}
+.syn-score.excellent { border-color: var(--cinnabar); }
+.syn-score.good { border-color: var(--cinnabar); }
+.syn-score.fair { border-color: var(--gold); }
+.syn-score.poor { border-color: var(--ink-light); }
+.syn-score-num { font-size: 44px; font-weight: 700; color: var(--cinnabar-deep); line-height: 1.1; }
+.syn-score-band { font-size: 14px; letter-spacing: 3px; color: var(--ink); }
+
+.syn-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 4px;
+  border-bottom: 1px dashed var(--line);
+  font-size: 14px;
+}
+.syn-item:last-child { border-bottom: none; }
+.syn-item-label {
+  flex: 0 0 118px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--cinnabar-deep);
+}
+.syn-item.neg .syn-item-label { color: var(--ink-light); }
+.syn-item-label i {
+  font-style: normal;
+  font-size: 12px;
+  margin-left: 4px;
+  color: var(--gold);
+}
+.syn-item.neg .syn-item-label i { color: var(--ink-light); }
+.syn-item-detail { flex: 1; color: var(--ink); text-align: justify; }
+.syn-items { margin-bottom: 16px; }
+
+/* 起名结果 */
+.name-item {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: rgba(255, 252, 244, 0.6);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.name-item:first-of-type {
+  border-color: var(--cinnabar);
+  box-shadow: 0 0 0 1px var(--cinnabar), 0 2px 8px rgba(158, 47, 37, 0.1);
+}
+.name-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.name-rank {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cinnabar-deep);
+  border: 1.5px solid var(--cinnabar);
+  border-radius: 50%;
+}
+.name-item:first-of-type .name-rank { color: #f7ecd9; background: var(--cinnabar); }
+.name-text { font-size: 24px; font-weight: 700; letter-spacing: 4px; }
+.name-pinyin { font-size: 13px; color: var(--ink-light); letter-spacing: 1px; }
+.wx-tag {
+  font-size: 12px;
+  border-radius: 3px;
+  padding: 0 6px;
+  border: 1px solid currentColor;
+}
+.name-wuge {
+  margin-top: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 13px;
+  color: var(--ink-light);
+}
+.name-wuge b { font-weight: 700; margin-left: 2px; }
+.vg-good { color: var(--wx-wood); }
+.vg-mid { color: var(--wx-earth); }
+.vg-bad { color: var(--cinnabar-deep); }
+.name-meaning { margin-top: 8px; font-size: 13px; color: var(--ink-light); text-align: justify; }
+
+#naming-basis { margin-bottom: 16px; }
+#naming-basis b { color: var(--cinnabar-deep); }
+
 /* ---------------- 命理解读 ---------------- */
 
 .reading-section { margin-bottom: 22px; }
